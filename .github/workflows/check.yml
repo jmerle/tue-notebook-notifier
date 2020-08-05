@@ -1,0 +1,39 @@
+name: Check
+
+on:
+  schedule:
+    - cron: '0 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Set up Playwright
+        uses: microsoft/playwright-github-action@v1
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Run
+        run: yarn start
+
+      - name: Send email
+        uses: dawidd6/action-send-mail@v2
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_PASSWORD }}
+          to: ${{ secrets.GMAIL_USERNAME }}
+          from: ${{ secrets.GMAIL_USERNAME }}
+          subject: tue-notebook-notifier notifications
+          body: file://email.txt
