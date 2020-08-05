@@ -5,7 +5,7 @@ on:
     - cron: '0 * * * *'
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,6 +28,7 @@ jobs:
 
       - name: Send email
         uses: dawidd6/action-send-mail@v2
+        if: ${{ env.SEND_EMAIL == 'true' }}
         with:
           server_address: smtp.gmail.com
           server_port: 465

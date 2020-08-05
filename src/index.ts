@@ -49,6 +49,9 @@ async function check(page: Page, url: string, language: string, knownCharCount: 
 
     if (notifications.length > 0) {
       createEmailFile();
+      console.log('::set-env SEND_EMAIL=true');
+    } else {
+      console.log('::set-env SEND_EMAIL=false');
     }
   } catch (err) {
     console.error(err);
