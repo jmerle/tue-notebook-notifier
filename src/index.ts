@@ -42,7 +42,7 @@ async function check(page: Page, url: string, language: string, knownCharCount: 
     const browser = await chromium.launch();
     const page = await browser.newPage();
 
-    await check(page, 'https://studiegids.tue.nl/studeren/voorzieningen/notebook-kortingsregeling/', 'Dutch', 787);
+    await check(page, 'https://studiegids.tue.nl/studeren/voorzieningen/notebook-kortingsregeling/', 'Dutch', 786);
     await check(page, 'https://educationguide.tue.nl/studying/services/notebook-reduction-program/', 'English', 636);
 
     await browser.close();
