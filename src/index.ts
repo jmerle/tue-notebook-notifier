@@ -36,7 +36,7 @@ async function check(url: string, language: string, knownCharCount: number): Pro
 
 (async () => {
   try {
-    await check('https://studiegids.tue.nl/studeren/voorzieningen/notebook-kortingsregeling/', 'Dutch', 786);
+    await check('https://studiegids.tue.nl/studeren/voorzieningen/notebook-kortingsregeling/', 'Dutch', 787);
     await check('https://educationguide.tue.nl/studying/services/notebook-reduction-program/', 'English', 636);
 
     if (notifications.length > 0) {
