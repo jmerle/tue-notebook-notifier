@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { chromium, Page } from 'playwright';
+import * as cheerio from 'cheerio';
+import got from 'got';
 
 const notifications: string[] = [];
 
@@ -19,18 +20,14 @@ ${notifications.map(notification => `- ${notification}`).join('\n')}
   console.log(body);
 }
 
-async function getCharCount(page: Page, url: string): Promise<number> {
-  await page.goto(url);
-
-  const text = await page.evaluate(() => {
-    return document.querySelector('.mainContentColumn').textContent;
-  });
-
-  return text.trim().length;
+async function getCharCount(url: string): Promise<number> {
+  const { body } = await got(url);
+  const $ = cheerio.load(body);
+  return $('.mainContentColumn').text().trim().length;
 }
 
-async function check(page: Page, url: string, language: string, knownCharCount: number): Promise<void> {
-  const charCount = await getCharCount(page, url);
+async function check(url: string, language: string, knownCharCount: number): Promise<void> {
+  const charCount = await getCharCount(url);
 
   if (charCount !== knownCharCount) {
     notifications.push(`The ${language} page has been updated: ${url}`);
@@ -39,19 +36,14 @@ async function check(page: Page, url: string, language: string, knownCharCount: 
 
 (async () => {
   try {
-    const browser = await chromium.launch();
-    const page = await browser.newPage();
-
-    await check(page, 'https://studiegids.tue.nl/studeren/voorzieningen/notebook-kortingsregeling/', 'Dutch', 786);
-    await check(page, 'https://educationguide.tue.nl/studying/services/notebook-reduction-program/', 'English', 636);
-
-    await browser.close();
+    await check('https://studiegids.tue.nl/studeren/voorzieningen/notebook-kortingsregeling/', 'Dutch', 786);
+    await check('https://educationguide.tue.nl/studying/services/notebook-reduction-program/', 'English', 636);
 
     if (notifications.length > 0) {
       createEmailFile();
-      console.log('::set-env SEND_EMAIL=true');
+      console.log('::set-env name=SEND_EMAIL::true');
     } else {
-      console.log('::set-env SEND_EMAIL=false');
+      console.log('::set-env name=SEND_EMAIL::false');
     }
   } catch (err) {
     console.error(err);
