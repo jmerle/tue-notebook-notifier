@@ -1,8 +1,13 @@
 name: Check
 
+# on:
+#   schedule:
+#     - cron: '0 * * * *'
+
 on:
-  schedule:
-    - cron: '0 * * * *'
+  push:
+    branches-ignore:
+      - '**'
 
 jobs:
   check:
